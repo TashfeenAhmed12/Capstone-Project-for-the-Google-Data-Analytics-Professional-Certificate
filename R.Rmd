@@ -1,0 +1,164 @@
+---
+title: "Untitled"
+author: "Tashfeen Ahmed"
+date: "2023-01-30"
+output:
+  word_document: default
+  html_document: default
+---
+import library and datsets available in folder
+```{r}
+install.packages("tidyverse", repos = "http://cran.us.r-project.org")
+library(tidyverse)
+install.packages("dplyr", repos = "http://cran.us.r-project.org")
+library(dplyr)
+install.packages("janitor", repos = "http://cran.us.r-project.org")
+library(janitor)
+library(ggplot2)
+library(lubridate)
+
+
+```
+Importing data
+
+```{r}
+daily_activity <- read.csv("C:\\Users\\tashf\\OneDrive\\Desktop\\Case Study\\Google_Project\\Fitabase_Data_4.12.16-5.12.16\\dailyActivity_merged.csv")
+daily_sleep <- read.csv("C:\\Users\\tashf\\OneDrive\\Desktop\\Case Study\\Google_Project\\Fitabase_Data_4.12.16-5.12.16\\sleepDay_merged.csv")
+weight_log <- read.csv("C:\\Users\\tashf\\OneDrive\\Desktop\\Case Study\\Google_Project\\Fitabase_Data_4.12.16-5.12.16\\weightLogInfo_merged.csv")
+daily_calories <- read.csv("C:\\Users\\tashf\\OneDrive\\Desktop\\Case Study\\Google_Project\\Fitabase_Data_4.12.16-5.12.16\\dailyCalories_merged.csv")
+daily_intensities <- read.csv("C:\\Users\\tashf\\OneDrive\\Desktop\\Case Study\\Google_Project\\Fitabase_Data_4.12.16-5.12.16\\dailyIntensities_merged.csv")
+daily_steps <- read.csv("C:\\Users\\tashf\\OneDrive\\Desktop\\Case Study\\Google_Project\\Fitabase_Data_4.12.16-5.12.16\\dailySteps_merged.csv")
+
+```
+
+Data is joined using id and date columns
+
+```{r}
+merge_1 <- merge(daily_activity, daily_sleep, by = c("Id" ))
+merge_2 <- merge(daily_steps, daily_calories, by = c("Id" ))
+merge_3 <- merge(daily_intensities, weight_log, by = c("Id" ))
+merge_4 <- merge(merge_1, merge_2, by = c("Id" ))
+
+
+
+```
+
+Convert Date from charater format to Date format
+
+```{r}
+merge_4$Date <- mdy(merge_4$Date)
+
+```
+
+
+summarize the data.
+```{r}
+summary(merge_4)
+
+```
+check data for unique id
+```{r}
+ n_distinct(daily_activity$Id)
+nrow(daily_activity)
+```
+should be 30 as survey was of 30 people
+
+```{r}
+summary(merge_3)
+```
+
+quick summary statistics
+```{r}
+colnames(daily_activity)
+```
+
+```{r}
+daily_sleep %>%  
+  select(TotalSleepRecords,
+  TotalMinutesAsleep,
+  TotalTimeInBed) %>%
+  summary()
+```
+```{r}
+colnames(merge_3)
+
+```
+
+```{r}
+colnames(merge_4)
+```
+```{r}
+ggplot(data=merge_4) +geom_point(mapping=aes(x=TotalMinutesAsleep,y=TotalTimeInBed))
+```
+Linear trend found which is expected
+```{r}
+ggplot(data=merge_3) +geom_smooth(mapping=aes(y=WeightKg, x = SedentaryMinutes))
+ggplot(data=merge_3) +geom_smooth(mapping=aes(x=WeightKg, y = LightlyActiveMinutes))
+ggplot(data=merge_3) +geom_smooth(mapping=aes(x=WeightKg, y = FairlyActiveMinutes))
+ggplot(data=merge_3) +geom_smooth(mapping=aes(x=WeightKg, y = VeryActiveMinutes))
+ggplot(data=merge_3) +geom_smooth(mapping=aes(x=WeightKg, y = VeryActiveDistance))
+
+
+
+```
+From these plot we can see 
+higher weight people are more sedentary. so we should target specifically above 70kg
+between 90 and 120kg people are very or fairly active- seems like high weight people are trying to lose weight and exercise more than normal people but they have less very active distance which means they run/jog less and are using indoor activities  to stay active such as gym
+
+
+```{r}
+ggplot(data=merge_4) +geom_smooth(mapping=aes(x=WeightKg, y = StepTotal))
+ggplot(data=merge_4) +geom_smooth(mapping=aes(x=WeightKg, y = TotalMinutesAsleep))
+ggplot(data=merge_4) +geom_smooth(mapping=aes(x=Calories, y = StepTotal))
+```
+
+step total decreases with weight, above 100 it is very less
+people who take more calories have less total 
+
+##Conclusion target less than 70kg as they are active but wont be willing to pay a lot because they are not passionate, they have more active distance though meaning they run/walk more. however between 90 and 120kg people are passionate and would be willing to spend more money 
+
+```{r}
+heart_rate <- read.csv("heartrate_seconds_merged.csv")
+hourly_calories <- read.csv("hourlyCalories_merged.csv")
+hourly_steps <- read.csv("hourlySteps_merged.csv")
+
+```
+column names
+
+```{r}
+colnames(heart_rate)
+colnames(hourly_calories)
+colnames(hourly_steps)
+```
+unique ids
+```{r}
+n_distinct(heart_rate$Id)
+n_distinct(hourly_calories$Id)
+n_distinct(hourly_steps$Id)
+```
+Unique id should be 33
+
+```{r}
+merge_4$month <- month(merge_4$Date)
+merge_4$days <- day(merge_4$Date)
+
+```
+
+
+
+```{r}
+ggplot(data=merge_4)+ geom_bar(mapping=aes(x=days))
+ggplot(data=merge_4)+ geom_bar(mapping=aes(x=month))
+```
+
+
+people most active in start of month and middle of month
+while most active months are April and may
+
+```{r}
+ggplot(data=merge_4)+ geom_boxplot(mapping=aes(x=WeightKg, y= Time))
+```
+generally people data was collected at 12 mid night, 1pm noon and 9pm night
+
+
+
