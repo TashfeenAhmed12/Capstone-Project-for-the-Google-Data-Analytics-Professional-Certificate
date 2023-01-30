@@ -6,7 +6,7 @@ Bellabeat is a high-tech manufacturer of health-focused products. As a junior da
 
 The data set is Fitbit Fitness Tracker Data taken from Kaggle which contains personal fitness trackers from thirty Fitbit users. It contains 18 CSV files
 
-Business objectives are as follows:
+#Business objectives 
 
 1.	What are some trends in smart device usage? 
 
@@ -14,7 +14,7 @@ Business objectives are as follows:
 
 3.	How could these trends help influence Bellabeat’s marketing strategy? 
 
-The key stakeholders are as follows:
+#Stakeholders 
 
 •	Urška Sršen: Bellabeat’s co-founder and Chief Creative Officer 
 
@@ -22,7 +22,7 @@ The key stakeholders are as follows:
 
 •	Bellabeat’s marketing analytics team: A team of data analysts responsible for collecting, analyzing, and reporting data that helps guide Bellabeat’s marketing strategy. 
 
-Conclusions
+#Conclusions
 
 •	We can see higher weight people are more sedentary. so we should target specifically below 70kg but between 90 and 120kg people are very or fairly active - seems like high weight people are trying to lose weight and exercise more than normal people but they have less (very active distance) which means they run/jog less and are using indoor activities to stay active such as gym
 
