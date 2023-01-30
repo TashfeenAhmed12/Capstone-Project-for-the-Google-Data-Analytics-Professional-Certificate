@@ -36,7 +36,7 @@ The data set is Fitbit Fitness Tracker Data taken from Kaggle which contains per
 
 •	Bellabeat’s marketing team can encourage users by educating and equipping them with knowledge about fitness benefits, suggest different types of exercises, calories intake and burn rate information on Bellabeat’s application.
 
-•	Most people use fitbit to track steps and calories burned, people don’t use to track sleep much. I will suggest focusing on steps, calories and sleep tracking more in application.
+•	Most people use fitbit to track steps and calories burned, people don’t use to track sleep much. I will suggest focusing on steps, calories more than sleep in application
 
 •	The relation between steps taken vs calories burned and very active minutes vs calories burned shows positive correlation. So, this can be a good marketing strategy.
 
