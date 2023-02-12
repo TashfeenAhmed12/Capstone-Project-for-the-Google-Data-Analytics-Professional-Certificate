@@ -1,6 +1,7 @@
 # Google-Capstone-Project
 
 Excel will be used for the data cleaning process and for removing errors from data. R programming language will be used for analysis and visualization. 
+Note: SQL, Tableau can be used for data manipulation and data visualization here as well, but using R all functions were performed.
 
 Bellabeat is a high-tech manufacturer of health-focused products. As a junior data analyst working with marketing analyst team at Bellabeat, I have been asked to focus on one of Bellabeat’s products and analyze smart device data to gain insight into how consumers are using their smart devices. I have performed analysis on data to give recommendations.
 
