@@ -24,6 +24,14 @@ The data set is Fitbit Fitness Tracker Data taken from Kaggle which contains per
 
 •	Bellabeat’s marketing analytics team: A team of data analysts responsible for collecting, analyzing, and reporting data that helps guide Bellabeat’s marketing strategy. 
 
+# Dataset
+
+FitBit Fitness Tracker Data (CC0: Public Domain, data set made available through Mobius)
+
+#Data Credibility
+
+There is no demographic data about users, hence women data cannot be extracted. Overall, data is 6 years old and would not be helpful in a fast moving technology market.
+
 # Conclusions
 
 •	We can see higher weight people are more sedentary. so we should target specifically below 70kg but between 90 and 120kg people are very or fairly active - seems like high weight people are trying to lose weight and exercise more than normal people but they have less (very active distance) which means they run/jog less and are using indoor activities to stay active such as gym
