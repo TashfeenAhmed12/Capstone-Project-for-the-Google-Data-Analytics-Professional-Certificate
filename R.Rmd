@@ -1,0 +1,493 @@
+---
+title: "Bellabit - Capstone Project"
+author: "Tashfeen Ahmed"
+date: "2023-01-30"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+import library and datasets available in folder
+```{r}
+library(tidyverse)
+# install.packages("dplyr", repos = "http://cran.us.r-project.org")
+library(dplyr)
+# install.packages("janitor", repos = "http://cran.us.r-project.org")
+library(janitor)
+library(ggplot2)
+library(lubridate)
+install.packages("openxlsx", dependencies=TRUE, repos = "http://cran.us.r-project.org")
+
+
+```
+Importing data
+
+```{r}
+daily_activity <- read.csv('dailyActivity_merged.csv')
+                           
+daily_sleep <- read.csv('sleepDay_merged.csv')
+
+weight_log <- read.csv('weightLogInfo_merged.csv')
+
+daily_calories <- read.csv('dailyCalories_merged.csv')
+
+daily_intensities <- read.csv('dailyIntensities_merged.csv')
+
+daily_steps <- read.csv('dailySteps_merged.csv')
+
+hourly_steps  <- read.csv('hourlySteps_merged.csv')
+
+hourly_calories <- read.csv('hourlyCalories_merged.csv')
+
+```
+
+Preview Data
+
+```{r}
+head(daily_activity)
+
+head(daily_sleep)
+
+
+head(daily_calories)
+
+head(weight_log)
+
+head(hourly_steps)
+
+head(hourly_calories)
+```
+
+```{r}
+str(daily_activity)
+str(daily_sleep)
+str(hourly_calories)
+str(weight_log)
+str(hourly_steps)
+str(hourly_calories)
+
+
+```
+
+To confirm a number of participants in all data sets I will count unique IDs.
+
+```{r}
+n_distinct(weight_log$Id)
+         
+n_distinct(daily_activity$Id)
+n_distinct(daily_sleep$Id)
+n_distinct(daily_calories$Id)
+n_distinct(hourly_steps$Id)
+n_distinct(hourly_calories$Id)
+```
+ checking a total number of duplicates in each data frame.
+ 
+```{r}
+sum(duplicated(weight_log))
+sum(duplicated(daily_activity))
+sum(duplicated(daily_sleep))
+sum(duplicated(daily_calories))
+sum(duplicated(hourly_steps))
+sum(duplicated(hourly_calories))
+```
+ Only sleep data contains duplicates. They need to be cleaned.
+```{r}
+daily_sleep <- daily_sleep %>% 
+  distinct()
+sum(duplicated(daily_sleep))
+
+```
+Standardizing column names
+
+```{r}
+# clean_names(daily_activity)
+# clean_names(daily_calories)
+# clean_names(hourly_calories)
+# clean_names(daily_sleep)
+# clean_names(hourly_steps)
+
+```
+
+Format Date and Time
+
+Change variable name
+
+```{r}
+daily_activity <- daily_activity %>%
+    rename(ActivityDay = Date)
+   
+```
+
+```{r}
+daily_activity <- daily_activity %>%  
+  mutate(ActivityDay = as_date(ActivityDay, format = "%m/%d/%Y"))
+   
+```
+
+```{r}
+daily_activity <- daily_activity %>% 
+           mutate(year = lubridate::year(ActivityDay), 
+                month = lubridate::month(ActivityDay), 
+                day = lubridate::day(ActivityDay))
+
+
+```
+
+
+
+```{r}
+daily_calories <- daily_calories %>% 
+  mutate(ActivityDay = as.Date(ActivityDay, format = "%m/%d/%Y")) %>%
+  mutate(year = lubridate::year(ActivityDay), 
+                month = lubridate::month(ActivityDay), 
+                day = lubridate::day(ActivityDay))
+```
+
+```{r}
+daily_intensities <- daily_intensities %>% 
+  mutate(ActivityDay = as.Date(ActivityDay, format = "%m/%d/%Y")) %>%
+  mutate(year = lubridate::year(ActivityDay), 
+                month = lubridate::month(ActivityDay), 
+                day = lubridate::day(ActivityDay))
+```
+
+```{r}
+daily_sleep <- daily_sleep %>% 
+  rename(ActivityDay = SleepDay) %>%
+  mutate(ActivityDay = as.Date(ActivityDay, format = "%m/%d/%Y")) %>%
+  mutate(year = lubridate::year(ActivityDay), 
+                month = lubridate::month(ActivityDay), 
+                day = lubridate::day(ActivityDay))
+```
+
+
+```{r}
+daily_steps <- daily_steps %>% 
+  mutate(ActivityDay = as.Date(ActivityDay, format = "%m/%d/%Y")) %>%
+  mutate(year = lubridate::year(ActivityDay), 
+                month = lubridate::month(ActivityDay), 
+                day = lubridate::day(ActivityDay))
+```
+
+
+```{r}
+weight_log <- weight_log %>%
+  rename(ActivityDay = Date) %>%
+  mutate(ActivityDay = as.Date(ActivityDay, format = "%m/%d/%Y")) %>%
+           mutate(year = lubridate::year(ActivityDay),
+                  month = lubridate::month(ActivityDay),
+                  day = lubridate::day(ActivityDay))
+```
+
+
+Format date/time data where a time stamp is in 12 hours AM/PM format
+
+```{r}
+daily_activity <- daily_activity %>% 
+  mutate(Time = format(strptime(Time, "%H:%M"), "%I:%M"))
+
+```
+
+
+
+
+Analyze
+join using id and date columns
+
+```{r}
+merge_1 <- full_join(daily_activity, daily_sleep, by = c("Id", "year", "month", "day" ))
+merge_2 <- full_join(daily_steps, daily_calories, by = c("Id", "year", "month", "day" ))
+merge_3 <- full_join(daily_intensities, weight_log, by = c("Id", "year", "month", "day" ))
+merge_4 <- full_join(merge_1, merge_2, by = c("Id", "year", "month", "day" ))
+```
+
+```{r}
+merge_5 <- full_join(merge_3,merge_4, by = c("Id", "year", "month", "day" ))
+```
+
+
+
+
+summarize the data.
+```{r}
+summary(merge_5)
+
+```
+check data for unique id and duplicate
+```{r}
+ n_distinct(merge_5$Id)
+nrow(merge_5)
+```
+should be 30 as survey was of 30 people
+
+```{r}
+ # clean_names(merge_5)
+
+```
+
+
+```{r}
+daily_sleep %>%  
+  select(TotalSleepRecords,
+  TotalMinutesAsleep,
+  TotalTimeInBed) %>%
+  summary()
+```
+```{r}
+colnames(merge_5)
+```
+
+```{r}
+install.packages("rio", repos = "http://cran.us.r-project.org")
+library(openxlsx)
+library(rio)
+
+export(merge_5, "merge_5_to_clean.xlsx")
+
+```
+
+
+
+```{r}
+merge_6 <- subset(merge_5, select = -c(WeightKg.y
+, ActivityDay.y
+, Fat.y
+, LogId.y
+, ActivityDay.y.x
+, ActivityDay.x.y
+, ActivityDay.y.y
+,ActivityDay.x.x, BMI.y,WeightPounds.y,IsManualReport.y))
+
+colnames(merge_6)
+setwd("Created DataSets")
+export(merge_6, "MERGE_6_CLEANED_DATA.XLSX")
+```
+```{r}
+str(merge_6)
+```
+
+
+
+
+Average Table
+
+
+
+
+```{r}
+ average_values1 <- data.frame(avg_sedentary_mins =mean(merge_6$SedentaryMinutes),
+                              
+avg_light_active_mins = mean(merge_6$LightlyActiveMinutes),
+                              
+avg_fairly_active_mins = mean(merge_6$FairlyActiveMinutes),
+
+avg_very_active_mins = mean(merge_6$VeryActiveMinutes),
+
+avg_sedentary_active_distance = mean(merge_6$SedentaryActiveDistance), 
+                                     
+avg_light_active_distance = 3.34, 
+                                                                                                          
+avg_moderately_active_distance = mean(merge_6$ModeratelyActiveDistance),
+
+avg_very_active_distance = mean(merge_6$VeryActiveDistance),
+
+avg_minutes_sleep = mean(merge_6$TotalMinutesAsleep, na.rm = TRUE),
+
+avg_calories = mean(merge_6$Calories),
+
+avg_steps = mean(merge_6$StepTotal))
+
+
+
+```
+```{r}
+head(average_values1)
+```
+
+```{r}
+export(average_values1, "Partial Average Values.xlsx")
+```
+
+
+Plot Graphs
+
+
+
+```{r}
+ggplot(data=merge_6) +geom_point(mapping=aes(x=TotalMinutesAsleep,y=TotalTimeInBed))
+```
+Linear trend found which is expected
+```{r}
+ggplot(data=merge_6) +geom_smooth(mapping=aes(y=WeightKg.x, x = SedentaryMinutes))
+ggplot(data=merge_6) +geom_smooth(mapping=aes(x=WeightKg.x, y = LightlyActiveMinutes))
+ggplot(data=merge_6) +geom_smooth(mapping=aes(x=WeightKg.x, y = FairlyActiveMinutes))
+ggplot(data=merge_6) +geom_smooth(mapping=aes(x=WeightKg.x, y = VeryActiveMinutes))
+ggplot(data=merge_6) +geom_smooth(mapping=aes(x=WeightKg.x, y = LightActiveDistance))
+ggplot(data=merge_6) +geom_smooth(mapping=aes(x=WeightKg.x, y = ModeratelyActiveDistance))
+ggplot(data=merge_6) +geom_smooth(mapping=aes(x=WeightKg.x, y = VeryActiveDistance))
+
+
+```
+From these plot we can see 
+higher weight people are more sedentary. so we should target specifically below 65kg
+between 90 and 120kg people are very or fairly active- seems like high weight people are trying to lose weight and exercise more than normal people and they have more very active distance which means they run/jog less and are using indoor activities  to stay active such as gym
+
+
+```{r}
+ggplot(data=merge_6) +geom_smooth(mapping=aes(x=WeightKg.x, y = StepTotal))
+ggplot(data=merge_6) +geom_smooth(mapping=aes(x=WeightKg.x, y = TotalMinutesAsleep))
+ggplot(data=merge_6) +geom_smooth(mapping=aes(x=Calories, y = StepTotal))
+```
+
+step total decreases with weight, above 100kg steps decline
+people who take more calories have more steps there is a linear relationship 
+
+##Conclusion target less than 65kg as they are active but wont be willing to pay a lot because they are not passionate, they have more active distance though meaning they run/walk more. however between 90 and 120kg people are passionate and would be willing to spend more money 
+
+
+
+
+```{r}
+ggplot(data=merge_6)+ geom_bar(mapping=aes(x=day))
+ggplot(data=merge_6)+ geom_bar(mapping=aes(x=month))
+```
+
+
+people most active in start of month and middle of month
+while data was collected only for April and May Months
+
+```{r}
+ggplot(data=merge_6) +geom_smooth(mapping=aes(x=TotalMinutesAsleep
+, y = LightlyActiveMinutes))
+
+ggplot(data=merge_6) +geom_smooth(mapping=aes(x=TotalMinutesAsleep
+, y = FairlyActiveMinutes
+))
+
+ggplot(data=merge_6) +geom_smooth(mapping=aes(x=TotalMinutesAsleep
+, y = VeryActiveMinutes
+))
+```
+
+
+Active people sleep less than 400 minutes
+
+
+```{r}
+heart_rate <- read.csv("heartrate_seconds_merged.csv")
+hourly_calories <- read.csv("hourlyCalories_merged.csv")
+hourly_steps <- read.csv("hourlySteps_merged.csv")
+
+```
+column names
+
+```{r}
+colnames(heart_rate)
+colnames(hourly_calories)
+colnames(hourly_steps)
+```
+unique ids
+
+```{r}
+n_distinct(heart_rate$Id)
+n_distinct(hourly_calories$Id)
+n_distinct(hourly_steps$Id)
+```
+
+Unique id should be 30 as survey was for 40 people
+
+Format Date and Time
+
+```{r}
+heart_rate$Time <- dmy_hms(heart_rate$Time)
+
+```
+```{r}
+heart_rate <- heart_rate %>%
+  mutate(ActivityDay = as.Date(Time,  format = "%m/%d/%Y"))
+```
+
+
+```{r}
+heart_rate$Time <- format(as.POSIXct(heart_rate$Time), format = "%H:%M:%S")
+
+heart_rate <- heart_rate %>%
+  mutate( year = lubridate::year(ActivityDay),
+          month = lubridate::month(ActivityDay),
+          day = lubridate::day(ActivityDay))
+```
+
+
+```{r}
+hourly_calories$ActivityHour <- dmy_hms(hourly_calories$ActivityHour)
+
+hourly_calories <- hourly_calories %>%
+  mutate(ActivityDay = as.Date(ActivityHour,  format = "%m/%d/%Y"))
+
+hourly_calories$ActivityHour <- format(as.POSIXct(hourly_calories$ActivityHour), format = "%H:%M:%S")
+
+hourly_calories <- hourly_calories %>% 
+  rename(Time = ActivityHour) %>%
+  mutate( year = lubridate::year(ActivityDay),
+          month = lubridate::month(ActivityDay),
+          day = lubridate::day(ActivityDay))
+```
+
+
+```{r}
+hourly_steps$ActivityHour <- dmy_hms(hourly_steps$ActivityHour)
+
+hourly_steps <- hourly_steps %>%
+  mutate(ActivityDay = as.Date(ActivityHour,  format = "%m/%d/%Y"))
+
+hourly_steps$ActivityHour <- format(as.POSIXct(hourly_steps$ActivityHour), format = "%H:%M:%S")
+
+hourly_steps <- hourly_steps %>% 
+  rename(Time = ActivityHour)%>%
+  mutate( year = lubridate::year(ActivityDay),
+          month = lubridate::month(ActivityDay),
+          day = lubridate::day(ActivityDay))
+```
+Plot Graphs
+
+
+```{r}
+average_values_2 <- data.frame(avg_heart_rate =mean(heart_rate$Value),
+                              
+avg_hourly_steps = mean(hourly_steps$StepTotal),
+                              
+avg_hourly_calories = mean(hourly_calories$Calories))
+```
+
+
+```{r}
+average_values <- merge(average_values1,average_values_2)
+
+head(average_values)
+setwd("Created DataSets")
+export(average_values, "Complete Average Values.xlsx")
+```
+merge data
+
+```{r}
+merge_7 <- merge(daily_activity, heart_rate, by = c("Id"))
+```
+
+```{r}
+merge_8 <- merge(daily_activity, hourly_calories, by = c("Id"))
+merge_9 <- merge(daily_activity, hourly_steps, by = c("Id"))
+
+```
+
+Plot Graphs
+
+
+```{r}
+ggplot(data=merge_9) +geom_smooth(mapping=aes(x=WeightKg, y = StepTotal))
+```
+
+```{r}
+ggplot(data=merge_8) +geom_smooth(mapping=aes(x=WeightKg, y = Calories))
+```
+
+People between 80 and 100kg take most calories
