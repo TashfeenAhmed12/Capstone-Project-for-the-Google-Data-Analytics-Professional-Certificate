@@ -34,15 +34,13 @@ There is no demographic data about users, hence women data cannot be extracted. 
 
 # Conclusions
 
-•	We can see higher weight people are more sedentary. so we should target specifically below 70kg but between 90 and 120kg people are very or fairly active - seems like high weight people are trying to lose weight and exercise more than normal people but they have less (very active distance) which means they run/jog less and are using indoor activities to stay active such as gym
+•	We can see higher weight people(above 120kg) are more sedentary. so we should target specifically below 65kg but between 90 and 120kg people are very or fairly active - seems like high weight people are trying to lose weight and exercise more than normal people but they have less (very active distance) which means they run/jog less and are using indoor activities to stay active such as gym
 
 •	less than 70kg as they are active but won’t be willing to pay a lot because they are not passionate, they have more active distance though meaning they run/walk more. however, between 90 and 120kg people are passionate and would be willing to spend more money
 
-•	Generally, people’s data was collected at 12 mid night, 1pm noon and 9pm night.
+•	People are most active in the start of month and middle of month while data only collected for April and May.
 
-•	People are most active in the start of month and middle of month while most active months are April and May.
-
-•	Steps decreases with increase in weight, number of calories increase with decrease in step.
+•	Step total decreases with weight, above 100kg steps decline. People who take more calories have more steps there is a linear relationship, while active people sleep less than 400 minutes and people between 80 and 100kg take most calories.
 
 •	Bellabeat’s marketing team can encourage users by educating and equipping them with knowledge about fitness benefits, suggest different types of exercises, calories intake and burn rate information on Bellabeat’s application.
 
